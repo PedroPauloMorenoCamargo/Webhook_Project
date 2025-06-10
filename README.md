@@ -9,7 +9,6 @@ Neste projeto, integramos um **gateway de pagamentos simulado** ao backend de um
    - Se o JSON está completo e bem formado;
    - Se todos os campos obrigatórios estão presentes e não são nulos;
    - Se o campo `amount` representa um número válido (inteiro ou decimal);
-   - Se os tipos de dados dos campos estão corretos;
    - Se o valor de `amount` é positivo;
    - Se o código de moeda está de acordo com o padrão;
    - Se o campo `timestamp` segue o formato ISO 8601 UTC (e.g., `"2023-10-01T12:34:56Z"`);
