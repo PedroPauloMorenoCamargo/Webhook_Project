@@ -68,7 +68,7 @@ Neste projeto, integramos um **gateway de pagamentos simulado** ao backend de um
 | **`Types.hs`** | Define tipos e estruturas de dados: `Transaction`, `WebhookConfig` e o tipo de rota `WebhookAPI`. Implementa `FromJSON` com validação customizada de campos. |
 | **`Config.hs`** | URLs de confirmação/cancelamento e **set** de moedas válidas. |
 | **`Logic.hs`** | Lógica de Negócio: `validateTransaction`, `validateToken`, `confirmTransaction`, `cancelTransaction`, etc. |
-| **`python_tests/test_webhook.py`** | Simple Python Test Given. |
+| **`python_tests/test_webhook.py`** | Teste Simples em Python. |
 
 ---
 
