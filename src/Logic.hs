@@ -13,44 +13,61 @@ import Data.Time (parseTimeM, defaultTimeLocale, UTCTime)
 
 
 
-
--- | Processes a payment transaction by validating its content and token.
--- 
+-- | Processes a payment transaction by executing side effects based on its validity.
+--
+-- This function delegates the decision logic to `decideAction` and performs
+-- the corresponding action:
+--   - If the transaction is invalid (e.g., wrong amount or currency), it logs and cancels it;
+--   - If the token is invalid, it logs and ignores the transaction;
+--   - If valid, it logs and confirms the transaction.
+--
 -- Input:
---   - cfg: configuration data required to confirm or cancel a transaction
---   - trans: the transaction payload received from the webhook
+--   - cfg: configuration with confirmation and cancellation endpoints
+--   - token: optional authorization token
+--   - tx: the incoming transaction to process
 --
 -- Output:
---   - IO (Maybe Bool)
---     * Just True  → valid transaction, confirmed
---     * Just False → invalid payload, transaction canceled
---     * Nothing    → fake token detected, transaction ignored
+--   - IO-wrapped result:
+--     * Just True  → valid and confirmed transaction
+--     * Just False → invalid transaction, canceled
+--     * Nothing    → token was invalid, transaction ignored
 processPayment :: WebhookConfig -> Maybe T.Text -> Transaction -> IO (Maybe Bool)
-processPayment cfg token trans
-  -- Invalid Transaction (wrong amount or unknown currency)
-  | not (validateTransaction trans) = do
-      -- Log the invalid payload
-      putStrLn "❌ Pagamento inválido — cancelando transação."
-      -- Cancel the transaction using the provided configuration
-      cancelTransaction cfg trans
-      -- Return Just False to indicate the transaction was invalid
-      return (Just False)
+processPayment cfg token tx = case decideAction token tx of
+  Just False -> do
+    putStrLn "❌ Pagamento inválido — cancelando transação."
+    cancelTransaction cfg tx
+    return (Just False)
+  Nothing -> do
+    putStrLn "⚠️ Token falso detectado — ignorando transação."
+    return Nothing
+  Just True -> do
+    putStrLn "✅ Pagamento válido — confirmando transação."
+    confirmTransaction cfg tx
+    return (Just True)
 
-  -- Wrong Token
-  | not (validateToken token) = do
-      -- Log the fake token detection
-      putStrLn "⚠️ Token falso detectado — ignorando transação."
-      -- No action needed for fake tokens, just returns Nothing to indicate no action taken
-      return Nothing
+-- | Pure decision logic to determine what action should be taken for a transaction.
+--
+-- This function evaluates:
+--   - Whether the transaction is valid (structure, amount, currency, event, timestamp)
+--   - Whether the token is valid
+--
+-- It returns:
+--   * Just True  → transaction is valid and should be confirmed
+--   * Just False → transaction is invalid and should be canceled
+--   * Nothing    → token is invalid and transaction should be ignored
+--
+-- Input:
+--   - token: optional authorization token
+--   - tx: transaction payload to evaluate
+--
+-- Output:
+--   - Decision outcome as Maybe Bool
+decideAction :: Maybe T.Text -> Transaction -> Maybe Bool
+decideAction token tx
+  | not (validateTransaction tx) = Just False
+  | not (validateToken token)    = Nothing
+  | otherwise                    = Just True
 
-  -- Valid Transaction 
-  | otherwise = do
-      -- Log the valid transaction
-      putStrLn "✅ Pagamento válido — confirmando transação."
-      -- Confirm the transaction using the provided configuration
-      confirmTransaction cfg trans
-      -- Return Just True to indicate the transaction was valid and confirmed
-      return (Just True)
 
 
 
