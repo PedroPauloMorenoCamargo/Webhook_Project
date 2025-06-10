@@ -122,7 +122,7 @@ A IA foi empregada para:
 
 - **Geração do esqueleto inicial** do projeto, com estrutura Cabal;
 - Sugestão de **exemplos de uso das bibliotecas** `req` (cliente HTTP) e `aeson` (serialização JSON);
-- **Refatoração do código**;
+- **Refatoração do código** e em alguns casos construção de funçõees;
 - Fornecimento de **exemplos de uso de funções de bibliotecas externas**;
 - **Debugging**;
 - **Sugerir tipos de funções** e esclarecer assinaturas de bibliotecas externas;
