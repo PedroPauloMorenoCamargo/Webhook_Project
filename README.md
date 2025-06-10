@@ -110,7 +110,7 @@ Neste projeto, integramos um **gateway de pagamentos simulado** ao backend de um
 | Verificação de veracidade (token) | ✔️ |
 | **Confirma** transação em caso de sucesso | ✔️ |
 | **Cancela** transação em caso de divergência | ✔️ |
-| Ignora transação se token inválido | ✔️ |
+| **Ignora** transação se token inválido | ✔️ |
 | Persistência em banco de dados | ❌ |
 | Servidor HTTPS | ❌  |
 
