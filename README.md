@@ -80,7 +80,7 @@ Neste projeto, integramos um **gateway de pagamentos simulado** ao backend de um
    cd Webhook-Project
    ```
 
-2. **Compile** e **execute** o servidor (Cabal ≥ 3.0):  
+2. **Compile** e **execute** o servidor:  
    ```bash
    cabal update
    cabal build
